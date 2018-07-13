@@ -3,14 +3,13 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     mode: 'development',
-    entry: './src/index.jsx',
-    devtool: "source-map",
+    entry: './src/index.tsx',
     devServer: {
         // contentBase: path.join(__dirname, 'dist'),
         // compress: true,
         // port: 9000
         host: 'localhost',
-        port: 8888,
+        port: 9000,
         historyApiFallback: true,
         open: true,
         hot: true
@@ -19,15 +18,16 @@ module.exports = {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
     },
+    devtool: 'source-map',
     resolve: {
-        extensions: ['.js', '.jsx']
+        extensions: ['.js', '.json', '.ts', '.tsx'],
     },
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
-                loaders: ['babel-loader'],
-                exclude: /node_modules/
+                test: /\.ts|\.tsx$/,
+                use: 'awesome-typescript-loader',
+                include: __dirname
             },
             { test: /\.css$/,   loader: 'style-loader!css-loader' },
             { test: /\.less$/,  loader: 'style-loader!css-loader!less-loader' },
@@ -66,9 +66,6 @@ module.exports = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        // new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             template: 'public/index.html',
             favicon: 'public/favicon.ico'

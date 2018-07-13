@@ -7,7 +7,8 @@ var redux_1 = require("redux");
 var reducers_1 = require("./reducers");
 var Layout_1 = require("./pages/Layout");
 require("bootstrap/dist/css/bootstrap.min.css");
-// import './App.css';
+require("react-sortable-tree/style.css");
+require("./App.css");
 var BrowserRouter = require("react-router-dom").BrowserRouter;
 var store = redux_1.createStore(reducers_1.enthusiasm, {
     enthusiasmLevel: 1,

@@ -25,20 +25,90 @@ app.post('/parseFile/:fileName', async (req, res) => {
                 tempArr.push(fields[key]);
                 let splitting = tempArr[0].split('\r\n');
                 for (let i = 0; i < splitting.length; i++) {
-                    const tempDelimited = [];
+                    const delimitedItems = [];
                     let delimit = splitting[i].split(';');
                     for (let y = 0; y < delimit.length; y++) {
-                        tempDelimited.push(delimit[y])
+                        delimitedItems.push(delimit[y])
                     }
-                    parsedObject.data = [
-                        ...parsedObject.data,
-                        {
-                            id: i,
-                            items: tempDelimited
-                        }
-                    ];
-                }
+                    delimitedItems.map((value, index)=> {
+                    if(index===0){
+                        parsedObject.data = [
+                            ...parsedObject.data,
+                            {
+                                id: i,
+                                title:value,
+                                name:value,
+                                parent: null
+                            }
+                        ];
+                    }else{
+                        parsedObject.data = [
+                            ...parsedObject.data,
+                            {
+                                id: i,
+                                title:value,
+                                name:value,
+                                parent: i
+                            }
+                        ];
+                    }
+                    });
 
+                }
+            }
+        );
+        saveParsedFile(req, res, parsedObject);
+    });
+
+});
+
+app.post('/parseFileForTree/:fileName', async (req, res) => {
+    // console.log(req.param('fileName'));
+    let form = new formidable.IncomingForm();
+    form.multiples = true;
+    form.keepExtensions = true;
+    const parsedObject = {
+        data: []
+    };
+    form.parse(req, (err, fields) => {
+        Object.keys(fields).map((key,) => {
+                let tempArr = [];
+                tempArr.push(fields[key]);
+                let splitting = tempArr[0].split('\r\n');
+                for (let i = 0; i < splitting.length; i++) {
+                    const delimitedItems = [];
+                    let delimit = splitting[i].split(';');
+                    for (let y = 0; y < delimit.length; y++) {
+                        delimitedItems.push(delimit[y])
+
+
+                    }
+                    delimitedItems.map((value, index)=> {
+                    if(index===0){
+                        parsedObject.data = [
+                            ...parsedObject.data,
+                            {
+                                id: i,
+                                title:value,
+                                name:value,
+                                parent: null
+                            }
+                        ];
+                    }else{
+                        parsedObject.data = [
+                            ...parsedObject.data,
+                            {
+                                id: i,
+                                title:value,
+                                name:value,
+                                parent: i
+                            }
+                        ];
+                    }
+                    });
+
+
+                }
             }
         );
         saveParsedFile(req, res, parsedObject);

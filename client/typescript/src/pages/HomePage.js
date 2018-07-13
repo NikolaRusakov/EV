@@ -41,7 +41,7 @@ var HomePage = /** @class */ (function (_super) {
         // console.log(response);
         return (React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { lg: "4", key: "homePage" },
-                React.createElement(ItemList_1.default, { data: response && response }))));
+                React.createElement(ItemList_1.default, { data: response[0] && response[0] }))));
     };
     return HomePage;
 }(react_1.Component));

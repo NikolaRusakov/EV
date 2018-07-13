@@ -13,4 +13,12 @@ function decrementEnthusiasm() {
     };
 }
 exports.decrementEnthusiasm = decrementEnthusiasm;
+function createAction(type, payload) {
+    return payload === undefined ? { type: type } : { type: type, payload: payload };
+}
+exports.createAction = createAction;
+function action(type) {
+    return function (payload) { return (payload ? { type: type, payload: payload } : { type: type }); };
+}
+exports.action = action;
 //# sourceMappingURL=index.js.map

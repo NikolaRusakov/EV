@@ -7,7 +7,8 @@ import {enthusiasm} from './reducers';
 import {StoreState} from './types';
 import Layout from "./pages/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import './App.css';
+import 'react-sortable-tree/style.css';
+import './App.css';
 const BrowserRouter = require("react-router-dom").BrowserRouter;
 
 const store = createStore<StoreState>(enthusiasm, {

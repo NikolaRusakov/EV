@@ -26,7 +26,7 @@ class HomePage extends Component {
         return (
             <Row>
                 <Col lg="4" key="homePage">
-                    <ItemList data={response&&response}/>
+                    <ItemList data={response[0]&&response[0]}/>
                 </Col>
             </Row>
         )

@@ -25,8 +25,10 @@ export const saveParsedFile = (req, res, parsedObject) => {
         let dbo = db.db("mydb");
         let collection = dbo.collection(req.params.fileName);
         await collection.insertMany([parsedObject]);
-    }).then(() => {
         res.send("Insertion successful.");
-    });
+    })
+    //     .then(() => {
+    //
+    // });
 }
 
