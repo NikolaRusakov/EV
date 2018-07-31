@@ -2,7 +2,11 @@ import * as express from 'express'
 import * as multer from 'multer'
 import * as cors from 'cors'
 import * as formidable from 'formidable'
+// import {lookup} from './lib';
 
+const thesaurus = require('./lib');
+const googleThesaurus= require('./lib').googleLookup;
+const translate = require('google-translate-api');
 // setup
 const UPLOAD_PATH = 'uploads';
 const upload = multer({dest: `${UPLOAD_PATH}/`}); // multer configuration
@@ -10,6 +14,52 @@ import {findDocument, MongoClient, url, saveParsedFile} from '../database';
 // app
 const app = express();
 app.use(cors());
+app.get('/getWord/:word', async (req, res) => {
+    console.log(req.params.word);
+    translate(req.params.word, {to: 'cs'}).then(re => {
+        const response = {
+            text: re.text
+        }
+
+        res.send(response);
+    }).catch(err => {
+        console.error(err);
+    });
+});
+
+app.get('/getGoogleThesaurus/:browser/:word', async (req, res) => {
+    console.log(req.params.word);
+    googleThesaurus(req.params.browser,req.params.word)
+        .then(results => {
+            console.log(results)
+            res.send(results)
+        })
+
+});
+app.get('/getPowerThesaurus/:browser/:word', async (req, res) => {
+
+    await translate(req.params.word, {to: 'cs'}).then(re => {
+        const response = {
+            text: re.text
+        }
+
+        res.send(response);
+    }).catch(err => {
+        console.error(err);
+    });
+
+    await thesaurus(req.params.browser,req.params.word)
+        .then(results => {
+            console.log(results)
+            res.send(results)
+        })
+    // return thesaurus.lookup(req.params.word)
+    //     .then(results => {
+    //         return results
+    //     }).catch(e => {
+    //         console.log(e);
+    //     })
+});
 
 app.post('/parseFile/:fileName', async (req, res) => {
     // console.log(req.param('fileName'));
@@ -30,28 +80,28 @@ app.post('/parseFile/:fileName', async (req, res) => {
                     for (let y = 0; y < delimit.length; y++) {
                         delimitedItems.push(delimit[y])
                     }
-                    delimitedItems.map((value, index)=> {
-                    if(index===0){
-                        parsedObject.data = [
-                            ...parsedObject.data,
-                            {
-                                id: i,
-                                title:value,
-                                name:value,
-                                parent: null
-                            }
-                        ];
-                    }else{
-                        parsedObject.data = [
-                            ...parsedObject.data,
-                            {
-                                id: i,
-                                title:value,
-                                name:value,
-                                parent: i
-                            }
-                        ];
-                    }
+                    delimitedItems.map((value, index) => {
+                        if (index === 0) {
+                            parsedObject.data = [
+                                ...parsedObject.data,
+                                {
+                                    id: i,
+                                    title: value,
+                                    name: value,
+                                    parent: null
+                                }
+                            ];
+                        } else {
+                            parsedObject.data = [
+                                ...parsedObject.data,
+                                {
+                                    id: i,
+                                    title: value,
+                                    name: value,
+                                    parent: i
+                                }
+                            ];
+                        }
                     });
 
                 }
@@ -73,45 +123,62 @@ app.post('/parseFileForTree/:fileName', async (req, res) => {
     form.parse(req, (err, fields) => {
         Object.keys(fields).map((key,) => {
                 let tempArr = [];
+                let textId = 0;
                 tempArr.push(fields[key]);
                 let splitting = tempArr[0].split('\r\n');
                 for (let i = 0; i < splitting.length; i++) {
                     const delimitedItems = [];
+                    let parent;
+                    let parentId;
                     let delimit = splitting[i].split(';');
                     for (let y = 0; y < delimit.length; y++) {
-                        delimitedItems.push(delimit[y])
+                        textId++;
+                        if (y !== 0) {
+                            const delimitedItem = {
+                                id: i,
+                                title: delimit[y],
+                                key: textId,
+                            }
+                            delimitedItems.push(delimitedItem)
+                        } else {
+                            parent = delimit[y];
+                            parentId = textId;
 
-
+                        }
                     }
-                    delimitedItems.map((value, index)=> {
-                    if(index===0){
+
+
+                    let index = delimitedItems.length;
+                    // delimitedItems.map((value, index)=> {
+                    if (index < 2) {
                         parsedObject.data = [
                             ...parsedObject.data,
                             {
                                 id: i,
-                                title:value,
-                                name:value,
-                                parent: null
+                                title: parent,
+                                key: parentId,
                             }
                         ];
-                    }else{
+                    } else {
                         parsedObject.data = [
                             ...parsedObject.data,
                             {
                                 id: i,
-                                title:value,
-                                name:value,
-                                parent: i
+                                title: parent,
+                                key: parentId,
+                                children: delimitedItems,
+                                childrenLength: index
                             }
                         ];
                     }
-                    });
+                    // });
 
 
                 }
             }
         );
-        saveParsedFile(req, res, parsedObject);
+        res.send(parsedObject);
+        // saveParsedFile(req, res, parsedObject);
     });
 
 });

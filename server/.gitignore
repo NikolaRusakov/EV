@@ -4,7 +4,7 @@
 /node_modules
 # testing
 /coverage
-
+.swagger-codegen
 # production
 /build
 /dist

@@ -20,7 +20,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
-        extensions: ['.js', '.jsx']
+        extensions: [".jsx", ".json", ".js"]
     },
     module: {
         rules: [
@@ -29,17 +29,16 @@ module.exports = {
                 loaders: ['babel-loader'],
                 exclude: /node_modules/
             },
-            { test: /\.css$/,   loader: 'style-loader!css-loader' },
-            { test: /\.less$/,  loader: 'style-loader!css-loader!less-loader' },
-            { test: /\.scss$/,  loader: 'style-loader!css-loader!resolve-url-loader!sass-loader' },
-            { test: /\.json$/, loader: 'json-loader' },
-            { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,      loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
-            { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,    loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
-            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,       loader: 'url-loader?limit=10000&mimetype=application/octet-stream' },
-            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,       loader: 'file-loader' },
-            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,       loader: 'url-loader?limit=10000&mimetype=image/svg+xml' },
-            { test: /\.png$/, loader: "url-loader?mimetype=image/png"},
-            { test: /\.gif$/, loader: "url-loader?mimetype=image/png"},
+            {test: /\.css$/, loader: 'style-loader!css-loader'},
+            {test: /\.less$/, loader: 'style-loader!css-loader!less-loader'},
+            {test: /\.scss$/, loader: 'style-loader!css-loader!resolve-url-loader!sass-loader'},
+            {test: /\.woff(    \?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff'},
+            {test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml'},
+            {test: /\.png$/, loader: "url-loader?mimetype=image/png"},
+            {test: /\.gif$/, loader: "url-loader?mimetype=image/png"},
             // {
             //     test: /\.(scss)$/,
             //     use: [{
@@ -75,4 +74,7 @@ module.exports = {
         }),
         // ['import', { libraryName: "antd", style: true }]
     ],
+    node: {
+        fs: "empty"
+    }
 };

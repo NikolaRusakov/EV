@@ -15,4 +15,4 @@ ReactDOM.render((
             <Layout />
         </BrowserRouter>
     </Provider>
-), document.getElementById('root'));    
+), document.getElementById('root'));

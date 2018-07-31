@@ -1,0 +1,126 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a simple API"
+  version: "1.0.0"
+  title: "Simple Inventory API"
+  contact:
+    email: "you@your-company.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/NikolaRusakov/ease_verbiage1/1.0.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+schemes:
+- "https"
+paths:
+  /file/raw:
+    get:
+      operationId: "getFile"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/VocabularyObject"
+      x-swagger-router-controller: "Default"
+    post:
+      tags:
+      - "file"
+      operationId: "postFile"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "file"
+        in: "formData"
+        description: "The file to upload."
+        required: true
+        type: "file"
+      - name: "fileName"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "delimiter"
+        in: "formData"
+        description: "delimiter for parsing"
+        required: false
+        type: "string"
+      responses:
+        201:
+          description: "item created"
+        400:
+          description: "invalid input, object invalid"
+        409:
+          description: "an existing item already exists"
+      x-swagger-router-controller: "File"
+definitions:
+  VocabularyObject:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      data:
+        $ref: "#/definitions/Vocabulary"
+    example:
+      data:
+        -key: "-key"
+        -title: "-title"
+        -id: 0
+        -children: null
+      _id: "_id"
+  Vocabulary:
+    type: "object"
+    properties:
+      -id:
+        type: "integer"
+      -title:
+        type: "string"
+      -key:
+        type: "string"
+      -children:
+        $ref: "#/definitions/Vocabulary"
+    example:
+      -key: "-key"
+      -title: "-title"
+      -id: 0
+      -children: null
+  InventoryItem:
+    type: "object"
+    required:
+    - "id"
+    - "manufacturer"
+    - "name"
+    - "releaseDate"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name:
+        type: "string"
+        example: "Widget Adapter"
+      releaseDate:
+        type: "string"
+        format: "int32"
+        example: "2016-08-29T09:12:33.001Z"
+      manufacturer:
+        $ref: "#/definitions/Manufacturer"
+  Manufacturer:
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "ACME Corporation"
+      homePage:
+        type: "string"
+        format: "url"
+        example: "https://www.acme-corp.com"
+      phone:
+        type: "string"
+        example: "408-867-5309"

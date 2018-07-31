@@ -20,11 +20,11 @@ export const findDocument = (fileName: String, db, callback) => {
 };
 
 export const saveParsedFile = (req, res, parsedObject) => {
-    MongoClient.connect((url + "vocab"), async (err, db) => {
+    MongoClient.connect((url + "vocab"), (err, db) => {
         if (err) throw err;
         let dbo = db.db("mydb");
         let collection = dbo.collection(req.params.fileName);
-        await collection.insertMany([parsedObject]);
+        collection.insertMany([parsedObject]);
         res.send("Insertion successful.");
     })
     //     .then(() => {
